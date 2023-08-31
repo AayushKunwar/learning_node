@@ -2,16 +2,25 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 
-const adminRouters = require("./routes/admin.js");
+const adminData = require("./routes/admin.js");
 const shopRouters = require("./routes/shop.js");
+const expressHbs = require("express-handlebars");
 // req -> middleware -> middleware -> response
 
 const app = express();
 
+// global configuration value
+// app.engine("handlebars", expressHbs.engine());
+// app.set("view engine", "handlebars"); // pug is supported out of the box
+// app.set("views", "views"); // where to find these templates, is default
+
+app.set("view engine", "ejs");
+app.set("views", "views");
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/admin", adminRouters);
+app.use("/admin", adminData.routes);
 
 // here a the middleware, (use, post, get)
 app.use("/", (req, res, next) => {
@@ -20,11 +29,14 @@ app.use("/", (req, res, next) => {
 	next();
 });
 
-app.use(shopRouters);
+app.use("/shop", shopRouters);
 
 // if not request handler, have a catch all handler
 app.use((req, res, next) => {
-	res.status(404).send("<h1>Page Not Found</h1>");
+	res.status(404).render("404", {
+		pageTitle: "404",
+		content: "<h1>Page Not found</h1>",
+	});
 });
 
 app.listen(3000);
