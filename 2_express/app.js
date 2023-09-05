@@ -4,7 +4,7 @@ const path = require("path");
 
 const adminData = require("./routes/admin.js");
 const shopRouters = require("./routes/shop.js");
-const expressHbs = require("express-handlebars");
+// const expressHbs = require("express-handlebars");
 // req -> middleware -> middleware -> response
 
 const app = express();
